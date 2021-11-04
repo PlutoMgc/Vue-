@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>数据代理</title>
+        <!-- 引入Vue -->
+        <script type="text/javascript" src="./js/vue.js"></script>
+    </head>
+    <body>
+
+        <div id="root">
+            <h1>学校名称：{{name}}</h1>
+            <h2>学校地址：{{address}}</h2>
+            <!--a标签具有默认事件，即点击链接会跳转页面,一定情况下阻止默认事件-->
+            <a href="http:www.baidu.com" @click="showInfo">点我提示信息</a>
+            <!--下面的div和内嵌的button都具有点击事件，会有冒泡效果，一定情况下阻止事件冒泡-->
+            <div class="demo1" @click="showInfo">
+                <button @click="showInfo">点我提示信息</button>
+            </div>
+            <!--事件只触发一次-->
+            <button @click.once="showInfo">点我提示信息</button>
+            <!--使用事件的捕获模式-->
+            <div @click.capture="showMsg(1)">
+                div1
+                <div @click="showMsg(2)">
+                    div2
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据代理，通过一个对象代理对另一个对象中属性的操作 -->
+        <script type="text/javascript">
+            Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示
+
+            const vm = new Vue({
+                el:'#root',
+                data:function(){
+                    return{
+                        name:'哔哩哔哩',
+                        address:'北京'
+                    }
+                },
+                methods:{
+                    showInfo(e){
+                        e.preventDefault(), //阻止默认行为  @click.prevent等同于该写法
+                        e.stopPropagation() //阻止冒泡行为  @click.stop等同于该写法
+                    },
+                    showMsg(e){
+                        console.log(e)
+                    }
+                }
+            })
+            let obj = {x:100}
+            let obj2 = {y:200}
+
+            Object.defineProperty(obj2,'x',{
+                get(){
+                    return obj.x
+                },
+                set(value){
+                    obj.x = value
+                }
+            })
+        </script>
+    </body>
+</html>
